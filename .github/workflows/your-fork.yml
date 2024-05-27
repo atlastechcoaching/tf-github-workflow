@@ -1,3 +1,4 @@
+#Test
 name: Your Fork
 
 on:
@@ -6,7 +7,7 @@ on:
 
 jobs:
   close:
-    if: github.repository == 'hashicorp-education/learn-terraform-github-actions'
+    if: github.repository == 'tf-github-workflow/atlas-terraform-github-actions'
     runs-on: ubuntu-latest
     steps:
     - uses: superbrothers/close-pull-request@v3

@@ -1,3 +1,5 @@
+#Test
+#Test
 name: "Terraform Apply"
 
 on:
@@ -8,12 +10,12 @@ on:
 env:
   TF_CLOUD_ORGANIZATION: "atlastech"
   TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
-  TF_WORKSPACE: "learn-terraform-github-actions"
+  TF_WORKSPACE: "atlas-terraform-github-actions"
   CONFIG_DIRECTORY: "./"
 
 jobs:
   terraform:
-    if: github.repository != 'hashicorp-education/learn-terraform-github-actions'
+    if: github.repository != 'tf-github-workflow/atlas-terraform-github-actions'
     name: "Terraform Apply"
     runs-on: ubuntu-latest
     permissions:
