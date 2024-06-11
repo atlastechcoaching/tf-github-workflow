@@ -13,22 +13,23 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set Dockerfile version
+    - name: Increment version
+      id: increment_version
       run: |
-        current_version=$(grep -oP '(?<=LABEL version=")(.*?)(?=")' Dockerfile)
-        new_version=$(echo $current_version | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
-        sed -i "s/{{VERSION}}/$new_version/" Dockerfile
-      working-directory: Docker
+        current_version=${{ steps.get_latest_version.outputs.latest_tag }}
+        IFS='.' read -r major minor patch <<< "$current_version"
+        next_version="$major.$minor.$((patch + 1))"
+        echo "::set-output name=next_version::$next_version"
 
     - name: Build and tag Docker image
       run: |
-        docker build -t "${{ secrets.DOCKERHUB_USERNAME }}/myimage:${{ github.sha }}" .
-      working-directory: Docker
+        docker build -t "${{ secrets.DOCKERHUB_USERNAME }}/myimage:${{ steps.increment_version.outputs.next_version }}" .
+      working-directory: Docker 
   
     - name: Log in to Docker Hub
       run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
     - name: Push Docker image to Docker Hub
-      run: docker push "${{ secrets.DOCKERHUB_USERNAME }}/myimage:${{ github.sha }}"
+      run: docker push "${{ secrets.DOCKERHUB_USERNAME }}/myimage:${{ steps.increment_version.outputs.next_version }}"
       working-directory: Docker
 
