@@ -16,7 +16,7 @@ jobs:
     - name: Increment version
       id: increment_version
       run: |
-        current_version=${{ steps.get_latest_version.outputs.latest_tag }}
+        current_version=$(git describe --tags --abbrev=0)
         IFS='.' read -r major minor patch <<< "$current_version"
         next_version="$major.$minor.$((patch + 1))"
         echo "::set-output name=next_version::$next_version"
