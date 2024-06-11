@@ -6,3 +6,5 @@ COPY index.html /usr/local/apache2/htdocs/
 
 # Expose port 80 to allow traffic to the Apache server
 EXPOSE 80
+
+LABEL version="{{VERSION}}"

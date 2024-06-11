@@ -13,17 +13,20 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Setup Docker Buildx
-      uses: docker/setup-buildx-action@v2
+    - name: Set Dockerfile version
+      run: |
+        current_version=$(grep -oP '(?<=LABEL version=")(.*?)(?=")' Dockerfile)
+        new_version=$(echo $current_version | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
+        sed -i "s/{{VERSION}}/$new_version/" Dockerfile
 
     - name: Build and tag Docker image
       run: |
-        docker build -t "${{ secrets.DOCKERHUB_USERNAME }}/myimage:v1.0.0" .
+        docker build -t "${{ secrets.DOCKERHUB_USERNAME }}/myimage:$new_version" .
       working-directory: Docker
   
     - name: Log in to Docker Hub
       run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
     - name: Push Docker image to Docker Hub
-      run: docker push "${{ secrets.DOCKERHUB_USERNAME }}/myimage:v1.0.0"
+      run: docker push "${{ secrets.DOCKERHUB_USERNAME }}/myimage:$new_version"
       working-directory: Docker
