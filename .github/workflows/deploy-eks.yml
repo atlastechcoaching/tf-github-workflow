@@ -22,7 +22,7 @@ jobs:
         aws-region: us-east-1  # Replace with your EKS cluster region
 
     - name: Update kubeconfig
-      run: aws eks update-kubeconfig --name your-cluster-name --region us-east-1  # Replace with your EKS cluster name and region
+      run: aws eks update-kubeconfig --name tfcluster --region us-east-1  # Replace with your EKS cluster name and region
 
     - name: Set Docker image tag
       id: set_image_tag
