@@ -19,21 +19,11 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-1 # Change to your region
-
-    - name: Set up kubectl
-      uses: azure/setup-kubectl@v1
-      with:
-        version: 'v1.19.0' # Change to your preferred version
+        aws-region: us-east-1  # Replace with your EKS cluster region
 
     - name: Update kubeconfig
-      run: aws eks update-kubeconfig --name tfcluster --region us-east-1 # Change to your cluster name and region
+      run: aws eks update-kubeconfig --name your-cluster-name --region us-east-1  # Replace with your EKS cluster name and region
 
-    - name: Update image version in deployment manifest
+    - name: Deploy to EKS
       run: |
-        sed -i 's|image: zohirul/myimage:.*|image: zohirul/myimage:${{ github.event.workflow_run.outputs.image_tag }}|' deployment.yml
-      working-directory: .
-
-    - name: Apply Kubernetes manifests
-      run: kubectl apply -f deployment.yml
-      working-directory: .
+        kubectl apply -f deployment.yml  # Replace with the path to your deployment YAML file

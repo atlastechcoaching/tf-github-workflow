@@ -1,22 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx-deployment
+  name: myapp-deployment
   labels:
-    app: test-app
+    app: myapp
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: test-app
+      app: myapp
   template:
     metadata:
       labels:
-        app: test-app
+        app: myapp
     spec:
       containers:
-      - name: test-app
-        image: zohirul/myimage:latest
+      - name: myapp
+        image: your-dockerhub-username/myimage:v1.0.0  # Replace with your Docker Hub username and image tag
         ports:
         - containerPort: 80
-#Test
