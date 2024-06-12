@@ -28,10 +28,10 @@ jobs:
     #   id: set_image_tag
     #   run: echo "::set-output name=image_tag::${{ github.event.workflow_run.outputs.image_tag }}"
 
-    - name: Replace image tag in deployment manifest
-      run: |
-        sed -i "s|image: zohirul/myimage:tag|image: zohirul/myimage:${{ github.event.workflow_run.outputs.image_tag }}|" deployment.yml
-      working-directory: .
+    # - name: Replace image tag in deployment manifest
+    #   run: |
+    #     sed -i "s|image: zohirul/myimage:tag|image: zohirul/myimage:${{ github.event.workflow_run.outputs.image_tag }}|" deployment.yml
+    #   working-directory: .
       
     - name: Apply Kubernetes manifests
       run: kubectl apply -f deployment.yml
