@@ -17,6 +17,6 @@ spec:
     spec:
       containers:
         - name: myapp
-          image: your-dockerhub-username/myimage:{{TAG}}
+          image: zohirul/myimage:{{TAG}}
           ports:
             - containerPort: 80
