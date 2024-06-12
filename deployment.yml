@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: myapp
-        image: your-dockerhub-username/myimage:{{TAG}}  # Placeholder for the image tag
+        image: zohirul/myimage:{{TAG}}  # Placeholder for the image tag
         ports:
         - containerPort: 80

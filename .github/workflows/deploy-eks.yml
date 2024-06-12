@@ -30,8 +30,8 @@ jobs:
 
     - name: Update image tag in deployment manifest
       run: |
-        sed -i "s|image: your-dockerhub-username/myimage:.*|image: your-dockerhub-username/myimage:${{ steps.set_image_tag.outputs.image_tag }}|" path/to/deployment.yml  # Replace with your Docker Hub username and deployment YAML path
+        sed -i "s|image: zohirul/myimage:.*|image: zohirul/myimage:${{ steps.set_image_tag.outputs.image_tag }}|" deployment.yml  # Replace with your Docker Hub username and deployment YAML path
       working-directory: .
 
     - name: Apply Kubernetes manifests
-      run: kubectl apply -f path/to/deployment.yml  # Replace with the path to your deployment YAML file
+      run: kubectl apply -f deployment.yml  # Replace with the path to your deployment YAML file
