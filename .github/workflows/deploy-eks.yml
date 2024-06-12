@@ -30,8 +30,9 @@ jobs:
 
     - name: Replace image tag in deployment manifest
       run: |
-        sed -i "s|image: zohirul/myimage:.*|image: zohirul/myimage:${{ steps.set_image_tag.outputs.image_tag }}|" deployment.yml
+        sed -i "s|image: zohirul/myimage:{{TAG}}|image: zohirul/myimage:${{ steps.set_image_tag.outputs.image_tag }}|" deployment.yml
       working-directory: .
 
     - name: Apply Kubernetes manifests
-      run: kubectl apply -f deployment.yml  # Replace with the path to your deployment YAML file
+      run: kubectl apply -f deployment.yml
+      working-directory: .
