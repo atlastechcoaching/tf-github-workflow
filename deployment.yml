@@ -5,7 +5,7 @@ metadata:
   labels:
     app: myapp
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: myapp
@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: myapp
-        image: zohirul/myimage:{{TAG}}  # Placeholder for the image tag
+        image: zohirul/myimage:{{TAG}}
         ports:
         - containerPort: 80

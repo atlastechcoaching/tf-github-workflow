@@ -24,13 +24,13 @@ jobs:
     - name: Update kubeconfig
       run: aws eks update-kubeconfig --name your-cluster-name --region us-east-1  # Replace with your EKS cluster name and region
 
-    - name: Set Docker image tag
+    - name: Set image tag from previous workflow
       id: set_image_tag
       run: echo "::set-output name=image_tag::${{ github.event.workflow_run.outputs.image_tag }}"
 
-    - name: Update image tag in deployment manifest
+    - name: Replace image tag in deployment manifest
       run: |
-        sed -i "s|image: zohirul/myimage:.*|image: zohirul/myimage:${{ steps.set_image_tag.outputs.image_tag }}|" deployment.yml  # Replace with your Docker Hub username and deployment YAML path
+        sed -i "s|image: zohirul/myimage:.*|image: zohirul/myimage:${{ steps.set_image_tag.outputs.image_tag }}|" deployment.yml
       working-directory: .
 
     - name: Apply Kubernetes manifests
