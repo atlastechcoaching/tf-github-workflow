@@ -18,5 +18,4 @@ spec:
       containers:
         - name: myapp
           image: zohirul/myimage:tag
-          ports:
             - containerPort: 80
