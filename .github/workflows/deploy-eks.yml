@@ -25,7 +25,7 @@ jobs:
       run: aws eks update-kubeconfig --name tfcluster --region us-east-1  # Replace with your EKS cluster name and region
 
     - name: Update tag for deployment.yaml
-      run: sed -i 's/tag/${{ github.ref_name }}/g' deployment.yml'
+      run: sed -i 's/tag/${{ github.ref_name }}/g' deployment.yml
       working-directory: .
       
     - name: Apply Kubernetes manifests
