@@ -24,15 +24,6 @@ jobs:
     - name: Update kubeconfig
       run: aws eks update-kubeconfig --name tfcluster --region us-east-1  # Replace with your EKS cluster name and region
 
-    - name: Set image tag from previous workflow
-      id: set_image_tag
-      run: echo "::set-output name=image_tag::${{ github.event.workflow_run.outputs.image_tag }}"
-
-    - name: Replace image tag in deployment manifest
-      run: |
-        sed -i "s|image: zohirul/myimage:{{TAG}}|image: zohirul/myimage:${{ steps.set_image_tag.outputs.image_tag }}|" deployment.yml
-      working-directory: .
-
     - name: Apply Kubernetes manifests
       run: kubectl apply -f deployment.yml
       working-directory: .

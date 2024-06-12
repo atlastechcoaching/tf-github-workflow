@@ -17,6 +17,6 @@ spec:
     spec:
       containers:
         - name: myapp
-          image: zohirul/myimage:{{TAG}}
+          image: zohirul/myimage:{{ github.ref_name }}
           ports:
             - containerPort: 80
