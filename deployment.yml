@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -5,7 +6,7 @@ metadata:
   labels:
     app: myapp
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: myapp
@@ -15,7 +16,7 @@ spec:
         app: myapp
     spec:
       containers:
-      - name: myapp
-        image: zohirul/myimage:{{TAG}}
-        ports:
-        - containerPort: 80
+        - name: myapp
+          image: your-dockerhub-username/myimage:{{TAG}}
+          ports:
+            - containerPort: 80
