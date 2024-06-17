@@ -1,0 +1,52 @@
+name: Terraform Deploy 
+
+on: 
+  push: 
+    branches: 
+      - liam
+  pull request:
+    branches:
+      - liam
+  workflow_despatch: 
+
+jobs:
+  terraform: #job name
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: clone repo 
+      uses: action/checkout@v2
+
+    - name: install terraform
+      uses: hashicorp/setup-terraform@v3.1.1
+      with:
+        terraform_version: 1.1.0
+
+    - name: configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1 
+      with: 
+        aws-access-key-id: ${{ secrets.AWS_ACCESSKEY_LIAM}}
+        aws-secret-access-key: ${{ secrets.AWS_SECRETKEY_LIAM}}
+        aws-region: us-east-2
+
+    - name: terraform init
+      id: init
+      run: terraform init
+      working-directory: tf_liam
+
+    - name: terraform validate
+      id: validate
+      run: terraform validate
+      working-directory: tf_liam
+
+    - name: terraform plan
+      id: plan
+      run: terraform plan
+      working-directory: tf_liam
+
+    - name: terraform apply
+      id: apply
+      run: terraform apply -auto-approve
+      working-directory: tf_liam
+
+
