@@ -1,10 +1,8 @@
-# Use the latest version of the Apache HTTP server image from the Docker Hub
-FROM httpd:latest
+FROM httpd:2.4-alpine
 
-# Copy the local index.html file to the Apache document root
-COPY index.html /usr/local/apache2/htdocs/
+LABEL org.opencontainers.image.title="tf-github-workflow-demo"
+LABEL org.opencontainers.image.description="Small Apache demo image for Terraform and GitHub Actions training"
 
-# Expose port 80 to allow traffic to the Apache server
+COPY index.html /usr/local/apache2/htdocs/index.html
+
 EXPOSE 80
-
-LABEL version="{{VERSION}}"

@@ -4,48 +4,75 @@ on:
   push:
     branches:
       - main
+    paths:
+      - "Terraform/**"
+      - ".github/workflows/terraform-deploy.yml"
   pull_request:
     branches:
       - main
+    paths:
+      - "Terraform/**"
+      - ".github/workflows/terraform-deploy.yml"
   workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  AWS_REGION: us-east-1
+  TF_WORKING_DIR: Terraform
+  TF_STATE_KEY: tf-github-workflow/terraform.tfstate
 
 jobs:
   terraform:
+    name: Terraform
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: ${{ env.TF_WORKING_DIR }}
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v5
 
-    - name: Set up Terraform
-      uses: hashicorp/setup-terraform@v1
-      with:
-        terraform_version: 1.1.0
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: "~1.15.0"
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-west-1 # Change to your region
+      - name: Terraform fmt
+        run: terraform fmt -check -recursive
 
-    - name: Terraform Init
-      id: Init
-      run: terraform init
-      working-directory: Terraform
+      - name: Init without backend for pull requests
+        if: github.event_name == 'pull_request'
+        run: terraform init -backend=false
 
-    - name: Terraform Validate
-      id: Validate
-      run: terraform validate
-      working-directory: Terraform
+      - name: Configure AWS credentials
+        if: github.event_name != 'pull_request'
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
 
-    - name: Terraform Plan
-      id: Plan
-      run: terraform plan
-      working-directory: Terraform
+      - name: Terraform init
+        if: github.event_name != 'pull_request'
+        run: |
+          terraform init \
+            -backend-config="bucket=${{ secrets.TF_STATE_BUCKET }}" \
+            -backend-config="key=${{ env.TF_STATE_KEY }}" \
+            -backend-config="region=${{ env.AWS_REGION }}" \
+            -backend-config="dynamodb_table=${{ secrets.TF_STATE_LOCK_TABLE }}" \
+            -backend-config="encrypt=true"
 
-    - name: Terraform Apply
-      id: Apply
-      if: github.ref == 'refs/heads/main'
-      run: terraform apply -auto-approve
-      working-directory: Terraform
+      - name: Terraform validate
+        run: terraform validate
+
+      - name: Terraform plan
+        if: github.event_name != 'pull_request'
+        run: terraform plan -input=false -out=tfplan
+
+      - name: Terraform apply
+        if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch')
+        run: terraform apply -input=false -auto-approve tfplan

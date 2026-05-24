@@ -1,11 +1,20 @@
-provider "aws" {
-  region = "us-east-1"
+terraform {
+  required_version = ">= 1.8.0, < 2.0.0"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+
+  backend "s3" {}
 }
 
-terraform {
-  backend "s3" {
-    bucket         = "atlastech-state-bucket"
-    key            = "terraform.tfstate"
-    region         = "us-east-1"
+provider "aws" {
+  region = var.aws_region
+
+  default_tags {
+    tags = var.default_tags
   }
 }
